@@ -61,4 +61,73 @@ Object tracking is used in various applications, including surveillance, autonom
 - 
 how deepsort works ?
 
+
+- get idea of how tracking works
+- implement one on video streams
+- learn about nvidia deep stream tracking and detection pipeline.
+
+### Kalman filter work best in occlusion.
+- kalman filter may not be enough. we need some sort of tracking algorithm as well.
+- SORT - Simple Online Realtime Tracking
+- SORT = detection, Estimation, Association and Track idenity creation and destruction.
+- better detection lead better tracking.
+- SORT starts with - bounding box predictions -> kalman filtering(linear approximation - predicts future location of bounding boxes) -> cosine dist -> deep appearance descriptors -> IOU matching.
+- detections can be done using any CNN model once we have detections.
+- kalman filter works on predicting the next position value, useful in case of occlusions, works in iterative manner and keeps on improving its predictions.
+- kalmna filter generates future predictions for the objects.
+- IOU Matching - it uses hungarian algorithm -> to avoid n! Time complexity.
+- this is how sort algorithm works while, deep sort is an extension of current sort algorithm.
+- deep apperance descriptor - uses cnn - as an input this uses croppped image of the object creates vector of it, as an output, we receive a vector that encodes the information, that is present in that cropped image, these encoded vectors would allow us to compare different objects across frames,
+- pre-trained CNN, its high-dimensional feature vector which encodes the visual appearnce of the object.
+- this apperance are compared between frames to help associate detections with existing tracking 
+- distance metrics - deep appearance descriptors uses cosine dist while kalman filter uses -> mahalanobis distance.
+- kalman filter gives - probability distribution.
+- csacade matching -  cosiders temporal dimension as well, compare current ids with current detections and olders with old detections.
 - 
+
+
+Workflow of Deep SORT:
+
+1. Detection:
+
+In each frame, an object detection model detects objects and provides bounding boxes.
+Feature Extraction:
+
+For each detected object, a deep appearance feature is extracted using a CNN.
+
+2. Prediction:
+
+The Kalman Filter predicts the positions of all currently tracked objects in the next frame.
+
+3. Data Association:
+
+The Hungarian algorithm is used to associate detected objects with predicted tracks. The cost matrix is based on both IoU and the similarity of the deep appearance features.
+cosine similarity and IOU matching.
+
+4. Track Management:
+
+Tracks are updated, created, or deleted based on the association results.
+
+5. Output:
+
+The algorithm outputs the updated tracks, including the object IDs, which remain consistent across frames.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
